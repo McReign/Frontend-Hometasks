@@ -30,6 +30,6 @@ FiguresGroup.prototype.clear = function () {
  * @description Удаляет заданную фигуру с поля по ее ID.
  * @param {Figure} figure
  */
-FiguresGroup.prototype.remove = function (figure) {
+FiguresGroup.prototype.remove = function (figureID) {
     //...
 };
