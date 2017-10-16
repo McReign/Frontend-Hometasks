@@ -14,18 +14,21 @@ var Game = function Game(max_figures) {
 
 Game.FIELD = null;
 
+    
 
 /**
  * @description Тут может быть любая логика инициализации игры
  */
 Game.prototype.initialize = function () {
+    
+
     if (FiguresGroup) {
         this.figuresGroup = new FiguresGroup(this.MAX_FIGURES_NUMBER);
     }
     this.figuresCounterElement = document.querySelector('.fields__elements-count');
 
     Game.FIELD = document.querySelector('.field');
-
+    
     this._inited = true;
 };
 
@@ -42,6 +45,12 @@ Game.prototype.run = function () {
     if (backdrop) {
         backdrop.style.visibility = 'hidden';
     }
+    var _this = this;
+    Game.FIELD.addEventListener('click', function(){
+        var figure = new Figure(100,100,100);
+        _this.figuresGroup.add(figure);
+        
+    })
 
     /* Каждые 1000/40 миллисекунд (40 FPS) вызываем перерисовку фигур с изменившимися координатами */
     var _this = this;

@@ -22,7 +22,14 @@ var Figure = function Figure(width, height, velocity) {
 };
 
 Figure.prototype.init = function () {
-    //...
+    this.element = document.createElement('div');
+    this.element.classList.add("figure-base", "figure-square");
+    this.element.style.width = this.width + 'px';
+    this.element.style.height = this.height + 'px';
+    this.element.style.position = 'absolute';
+    this.element.style.top = this.coords.x + 'px';
+    this.element.style.left = this.coords.y + 'px';
+    this.insertElement(this.element);
 };
 
 /* статическое поле */
@@ -30,8 +37,11 @@ Figure.AUTO_INCREMENT = 0;
 
 Figure.prototype.element = null;
 
-Figure.prototype.coords = { x: 0, y: 0 };
 
+
+window.addEventListener('click', function(event) {
+    Figure.prototype.coords = { x: event.screenX, y: event.screenY };
+});
 /**
  * @description Вставляет DOM элемент в поле.
  * @param element
@@ -49,6 +59,8 @@ Figure.prototype.go = function () {
         throw new Error('The element not set');
     }
     /* Тут должна быть логика изменения координат для объекта */
+    this.element.style.top += (this.velocity + 'px');
+    this.element.style.left += (this.velocity + 'px');
 };
 
 
@@ -58,7 +70,7 @@ Figure.prototype.go = function () {
  * @constructor
  */
 var Ellipse = function Ellipse() {
-    //...
+
 };
 
 
