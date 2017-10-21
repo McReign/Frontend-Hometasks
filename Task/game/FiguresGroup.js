@@ -25,7 +25,7 @@ FiguresGroup.prototype.getFigures = function () {
  * @description Удаляет все фигуры с поля
  */
 FiguresGroup.prototype.clear = function () {
-        this._figures.splice(0, this._figures.length);
+    this._figures.splice(0, this._figures.length);
 };
 
 /**
@@ -33,5 +33,5 @@ FiguresGroup.prototype.clear = function () {
  * @param {Figure} figure
  */
 FiguresGroup.prototype.remove = function (figureID) {
-    this._figures.splice(this._figures.indexOf(figureID-1), 1);
+    this._figures.splice(figureID-1, 1);
 };

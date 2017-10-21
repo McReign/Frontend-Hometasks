@@ -5,7 +5,7 @@
  * @param velocity - Скорость
  * @constructor
  */
-var Figure = function Figure(width, height, velocity) {
+var Figure = function Figure(width, height, velocity, startX, startY) {
     width = width || 24;
     height = height || 24;
     velocity = velocity || 1;
@@ -17,18 +17,14 @@ var Figure = function Figure(width, height, velocity) {
     this.width = width;
     this.height = height;
     this.velocity = velocity;
+    this.x = startX;
+    this.y = startY;
 
     this.init();
 };
 
 Figure.prototype.init = function () {
-    this.element = document.createElement('div');
-    this.element.classList.add("figure-base", "figure-square");
-    this.element.style.width = this.width + 'px';
-    this.element.style.height = this.height + 'px';
-    this.element.style.position = 'absolute';
-    this.element.style.top = this.coords.x + 'px';
-    this.element.style.left = this.coords.y + 'px';
+    this.createElement(this.width, this.height);
     this.insertElement(this.element);
 };
 
@@ -37,16 +33,29 @@ Figure.AUTO_INCREMENT = 0;
 
 Figure.prototype.element = null;
 
+//Figure.prototype.coords = { x: this.startX, y: this.startY};
 
-
-window.addEventListener('click', function(event) {
-    Figure.prototype.coords = { x: event.screenX, y: event.screenY };
-});
 /**
  * @description Вставляет DOM элемент в поле.
  * @param element
  */
+
+Figure.prototype.createElement = function (width, height, borderRadius, className) {
+    var element = document.createElement('div');
+    element.classList.add('figure-base');
+    element.classList.add(className);
+    element.style.position = 'absolute';
+    element.style.width = width + 'px';
+    element.style.height = height + 'px'; 
+    element.style.borderRadius = borderRadius + '%';
+    element.style.borderWidth = getRandom(0, 15) + 'px';
+    this.element = element;
+}
+
+
 Figure.prototype.insertElement = function (element) {
+    element.style.top = this.y + 'px';
+    element.style.left = this.x + 'px';
     var field = document.querySelector('.field');
     field.appendChild(element);
 };
@@ -55,12 +64,26 @@ Figure.prototype.insertElement = function (element) {
  * @description Функция, которая должна вызываться из класса Game всякий раз, когда нужно изменить координаты для фигуры.
  */
 Figure.prototype.go = function () {
+
     if (!this.element) {
         throw new Error('The element not set');
     }
     /* Тут должна быть логика изменения координат для объекта */
-    this.element.style.top += (this.velocity + 'px');
-    this.element.style.left += (this.velocity + 'px');
+    
+    var windowWidth = document.querySelector('.field').clientWidth;
+    var windowHeight = document.querySelector('.field').clientHeight;
+
+    if(((this.x + this.width) >= windowWidth)
+        || ((this.y + this.height) >= windowHeight) 
+            || (this.x <= 0) || (this.y <= 0)) {
+                this.velocity*=-1;
+            }
+            
+    this.x += this.velocity;
+    this.y += this.velocity;
+    
+    this.element.style.top = this.y + 'px';
+    this.element.style.left = this.x + 'px';
 };
 
 
@@ -69,8 +92,19 @@ Figure.prototype.go = function () {
  * @description Конструктор класса Ellipse. Класс наследуется от Figure и создает элемент "Эллипс".
  * @constructor
  */
-var Ellipse = function Ellipse() {
 
+var Ellipse = function Ellipse() {
+    Figure.apply(this, arguments);
+}
+    
+Ellipse.prototype = Object.create(Figure.prototype);
+    
+    
+Ellipse.prototype.init = function() {
+    this.borderRadius = 50;
+    this.className = ("figure-circle");
+    this.createElement(this.width, this.height, this.borderRadius, this.className);
+    this.insertElement(this.element); 
 };
 
 
@@ -79,8 +113,20 @@ var Ellipse = function Ellipse() {
  * @description Конструктор класса Circle. Класс наследуется от Ellipse и создает элемент "Круг".
  * @constructor
  */
-var Circle = function Circle(radius, velocity) {
-    //...
+var Circle = function Circle() {
+    Ellipse.apply(this, arguments);
+}
+    
+Circle.prototype = Object.create(Ellipse.prototype);
+    
+    
+Circle.prototype.init = function() {
+    this.borderRadius = 50;
+    this._width = this.width;
+    this._height = this.width;
+    this.className = ("figure-circle");
+    this.createElement(this._width, this._height, this.borderRadius, this.className);
+    this.insertElement(this.element); 
 };
 
 
@@ -90,7 +136,17 @@ var Circle = function Circle(radius, velocity) {
  * @constructor
  */
 var Rectangle = function Rectangle() {
-    //...
+    Figure.apply(this, arguments);
+}
+    
+Rectangle.prototype = Object.create(Figure.prototype);
+    
+    
+Rectangle.prototype.init = function() {
+    this.borderRadius = 0;
+    this.className = ("figure-rectangle");
+    this.createElement(this.width, this.height, this.borderRadius, this.className);
+    this.insertElement(this.element); 
 };
 
 
@@ -99,6 +155,18 @@ var Rectangle = function Rectangle() {
  * @description Конструктор класса Square. Класс наследуется от Rectangle и создает элемент "Квадрат".
  * @constructor
  */
-var Square = function Square(size, velocity) {
-
+var Square = function Square() {
+    Rectangle.apply(this, arguments);
+}
+    
+Square.prototype = Object.create(Rectangle.prototype);
+    
+    
+Square.prototype.init = function() {
+    this.borderRadius = 0;
+    this._width = this.width;
+    this._height = this.width;
+    this.className = ("figure-square");
+    this.createElement(this._width, this._height, this.borderRadius, this.className);
+    this.insertElement(this.element); 
 };
